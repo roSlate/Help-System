@@ -1,0 +1,28 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Build output
+target/
+out/
+
+# Maven
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+.env.*
