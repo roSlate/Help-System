@@ -68,4 +68,8 @@ public class Request {
     public String getStatus() {
         return status;
     }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
 }

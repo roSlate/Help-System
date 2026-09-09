@@ -1,5 +1,6 @@
 package com.helpsystem.domain;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
  * Each user belongs to a department
  */
 
+@Entity
 public class Department {
 
     @Id

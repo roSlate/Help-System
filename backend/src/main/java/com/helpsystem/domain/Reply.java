@@ -30,7 +30,7 @@ public class Reply {
     public Reply(String title, String question, String answer,
                  String status, String name, String department) {
 
-        if (title == null || question == null || answer == null || name == null || department == null)
+        if (title == null || question == null || answer == null || status == null || name == null || department == null)
             throw new IllegalArgumentException("All fields must be properly filled out");
 
         this.title = title;
