@@ -39,13 +39,18 @@ classes);
   https://spring.io/guides/gs/accessing-data-mysql
   https://docs.spring.io/spring-boot/
 
+- Actual SQL Queries:
+  https://www.sqltutorial.org/
+  https://github.com/enochtangg/quick-SQL-cheatsheet
+  https://www.geeksforgeeks.org/sql/sql-describe-statement/ (small tutorial for the DESCRIBE Statement)
+
 - General consultation for the overall structure of the project
   YouTube guide for a fullstack application: 
 https://www.youtube.com/watch?v=lUVureR5GqI&list=WL&index=10 (Brazilian Portuguese)
 
 ## Project structure
 
-Domain model: to be documented and further refined, see `domain/` package.
+**Domain model**: to be documented and further refined, see `domain/` package.
 
 ## Database, configurations & secrets
 
@@ -60,12 +65,12 @@ docker run --name helpsystem-mysql \
   -d mysql:8
 ```
  
-*Note:** naturally, the command above only works the first time. If the container already exists (e.g. after 
+**Note**: naturally, the command above only works the first time. If the container already exists (e.g. after 
 restarting your machine), just start it again with:
 ```bash
 docker start helpsystem-mysql
 ```
-Or click the "start button" on Docker Desktop.
+Or click the "start" button on Docker Desktop.
 
 We are creating now another file called `application-local.properties`. It will be excluded from Git (and we updated our 
 .gitignore file to reflect this) because it holds real database credentials, and it's never to be committed.
@@ -93,8 +98,8 @@ into the configuration.
 
 Once that's done, navigate to the project's `backend` directory and run `./mvnw spring-boot:run` to test your setup.
 
-Next, enter the container we created earlier with the command `docker exec -it helpsystem-mysql mysql -uroot -p helpsystem`,
-and type the password you chose. Once you're in run the command `SHOW TABLES`, and you should see something like this:
+Next, enter the container we created earlier with the command `docker exec -it helpsystem-mysql mysql -uroot -p helpsystem`, 
+and type the password you chose. Once you're in run the command `SHOW TABLES;`, and you should see something like this:
 
 ```
 mysql> SHOW TABLES;
@@ -108,3 +113,84 @@ mysql> SHOW TABLES;
 +----------------------+
 4 rows in set (0.00 sec)
 ```
+
+Let's try actually inserting data into the tables first. The group was offered some suggestions regarding how to 
+accomplish this, the first being writing manual SQL. For this, we still need to be inside the container created, so if
+you exited it, just run the docker command we used in the paragraph above. If you struggle with SQL, there are two
+resources linked above which should help you interact the database for the project's purposes.
+
+First, we tried inserting some data in the `department` table: `INSERT INTO department (department) VALUES ('Sales');`.
+You don't need to specify `id` because it's generated automatically:
+
+```
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+```
+
+After running this command, verify if `Sales` was inserted into the chosen table. Run `SELECT * FROM department` and
+the output should be the following:
+
+```
+mysql> INSERT INTO department (department) VALUES ('Sales');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> SELECT * FROM department;
++----+------------+
+| id | department |
++----+------------+
+|  1 | Sales      |
++----+------------+
+1 row in set (0.01 sec)
+
+mysql>
+```
+
+Keep in mind that `department` is a very simple table because you only have two parameters, and one of them, `id`, is
+generated automatically. As such, we only needed to specify the `department` column (which might be confusing, as that
+column shares its name with the table's name).
+
+Let's try to insert something to a more complex table, such as `reply`. If you're not sure what parameters a given 
+table has, the DESCRIBE Statement (link above) is very useful here, as it does just that:
+
+```
+mysql> DESCRIBE reply;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| id         | int          | NO   | PRI | NULL    | auto_increment |
+| answer     | varchar(255) | YES  |     | NULL    |                |
+| department | varchar(255) | YES  |     | NULL    |                |
+| name       | varchar(255) | YES  |     | NULL    |                |
+| question   | varchar(255) | YES  |     | NULL    |                |
+| status     | varchar(255) | YES  |     | NULL    |                |
+| title      | varchar(255) | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.01 sec)
+
+mysql>
+```
+
+Given we have all of these parameters, inserting something manually is a little more complex, but the idea is the same.
+Now, we just have to match each `Field` (column, ordered alphabetically after id) to a corresponding value:
+
+```
+INSERT INTO reply (title, question, answer, status, name, department) VALUES ('Help!', 'How do I do this?', 
+'Like this!', 'Open', 'Johnny Doe', 'Sales');
+```
+
+Run this command, and, afterward, run the `SELECT` command one more time for `reply`:
+
+```
+mysql> SELECT * FROM reply;
++----+------------+------------+------------+-------------------+--------+-------+
+| id | answer     | department | name       | question          | status | title |
++----+------------+------------+------------+-------------------+--------+-------+
+|  1 | Like this! | Sales      | Johnny Doe | How do I do this? | Open   | Help! |
++----+------------+------------+------------+-------------------+--------+-------+
+1 row in set (0.00 sec)
+
+mysql>
+```
+
+If our output looks like this you've successfully inserted the data into the tables.
