@@ -40,15 +40,18 @@ classes);
   https://hub.docker.com/_/mysql
   https://spring.io/guides/gs/accessing-data-mysql
   https://docs.spring.io/spring-boot/
+  https://www.devmedia.com.br/criando-uma-conexao-java-mysql-server/16753 (Brazilian Portuguese)
+  https://www.baeldung.com/java-connect-mysql
 
 - Actual SQL Queries:
   https://www.sqltutorial.org/
   https://github.com/enochtangg/quick-SQL-cheatsheet
   https://www.geeksforgeeks.org/sql/sql-describe-statement/ (small tutorial for the DESCRIBE Statement)
 
-- General consultation for the overall structure of the project
+- General consultation for the overall structure and architecture of the project
   YouTube guide for a fullstack application: 
-https://www.youtube.com/watch?v=lUVureR5GqI&list=WL&index=10 (Brazilian Portuguese)
+  https://www.youtube.com/watch?v=lUVureR5GqI&list=WL&index=10 (Brazilian Portuguese)
+  https://medium.com/@albinaji.official/service-repository-pattern-in-action-0db4bb9a474b
 
 ## Project structure
 
@@ -232,3 +235,7 @@ we are inheriting working methods such as `save()`, `findById()`, `findAll()`, a
 through Spring. For now, nothing else is required for basic CRUD (Create, Read, Update, Delete) operations, though other
 more specific methods might be needed later (sources explaining how to write tests for Spring Boot apps linked above).
 Now we have to write these repository classes for the remaining domain classes, while applying the same pattern.
+
+## Service layer
+
+## Controller layer
