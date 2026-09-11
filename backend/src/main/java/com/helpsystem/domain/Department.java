@@ -33,4 +33,8 @@ public class Department {
     public String getDepartment() {
         return department;
     }
+
+    public int getId() {
+        return id;
+    }
 }

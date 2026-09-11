@@ -27,10 +27,12 @@ classes);
 
 
 ## Links used, by category
-- JPA:
+- JPA and Spring (relevant for different layers):
+  https://docs.spring.io/spring-data/jpa/reference/repositories/core-concepts.html
   https://spring.io/guides/gs/accessing-data-jpa
   https://www.geeksforgeeks.org/advance-java/jpa-creating-an-entity/
   https://medium.com/@sumit.dev2148/entity-class-best-practices-and-rules-6c2a9261275b
+  https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html
 
 - Infrastructure and MySQL:
   https://stackoverflow.com/questions/31918987/how-to-start-mysql-server-in-docker-container
@@ -51,6 +53,15 @@ https://www.youtube.com/watch?v=lUVureR5GqI&list=WL&index=10 (Brazilian Portugue
 ## Project structure
 
 **Domain model**: to be documented and further refined, see `domain/` package.
+
+Regarding backend:
+
+com.helpsystem
+|-domain (where the JPA entities reside)
+|-repository (Spring Data JPA repos)
+|-HelpsystemApplication
+
+(controllers/service to come later)
 
 ## Database, configurations & secrets
 
@@ -194,3 +205,30 @@ mysql>
 ```
 
 If our output looks like this you've successfully inserted the data into the tables.
+
+Now, let's get back to our code once more and look at the Repository Layer.
+
+## Repository layer
+
+We'll be relying on Spring Data JPA Repositories to verify that domain objects (Replies, Requests, Users, etc.) can be
+saved and retrieved through Java, and not just through manual SQL queries/statements (see "Database, configurations & 
+secrets" above). Let's start with `Department` first as an example.
+
+First, create a package titled `repository` and create your DepartmentRepository.java class there (choose the interface
+option when creating this class). Write the following:
+
+```
+package com.helpsystem.repository;
+
+import com.helpsystem.domain.Department;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DepartmentRepository extends JpaRepository<Department, Integer> {
+}
+```
+
+And for now, that's it. We are telling Spring "this repository manages Department entities". By extending this interface,
+we are inheriting working methods such as `save()`, `findById()`, `findAll()`, and others, generated automatically
+through Spring. For now, nothing else is required for basic CRUD (Create, Read, Update, Delete) operations, though other
+more specific methods might be needed later (sources explaining how to write tests for Spring Boot apps linked above).
+Now we have to write these repository classes for the remaining domain classes, while applying the same pattern.
