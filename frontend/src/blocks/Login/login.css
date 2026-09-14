@@ -1,0 +1,105 @@
+.login-page {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: var(--space-6) var(--space-4);
+}
+
+.login-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 440px;
+  padding: var(--space-8);
+  background: #FFFFFF;
+  border: 1px solid var(--color-blue);
+  border-radius: var(--radius-md);
+}
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.login-brand-accent {
+  color: var(--color-blue);
+}
+
+.login-logo {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background: radial-gradient(50% 50% at 50% 50%, #00FFFF 0%, #0072FF 80%, #002B7F 100%);
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.467);
+  border-radius: var(--radius-full);
+}
+
+.login-logo .icon {
+  width: 18px;
+  height: 18px;
+  stroke: #FFFFFF;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.login-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-icon-dark);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+}
+
+.login-input input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font: inherit;
+  color: var(--color-icon-dark);
+}
+
+.login-forgot {
+  align-self: flex-end;
+  margin-top: var(--space-1);
+  color: var(--color-icon-dark);
+}
+
+.login-submit {
+  padding: var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-icon-dark);
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.login-footer {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--color-icon);
+}
+
+.login-footer a {
+  color: var(--color-icon-dark);
+}
