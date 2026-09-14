@@ -17,6 +17,8 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    // find a way to make this protected so it's unique (i.e., if "HR" already exists, do not allow
+    // for repeated creation)
     String department;
 
     protected Department() {

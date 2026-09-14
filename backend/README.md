@@ -75,8 +75,8 @@ com.helpsystem
 
 **Regarding primary and foreign keys**:
 
-Incompatibility regarding String acting as a foreign key, which it implies a `@ManyToOne` relationship (i.e., 
-`department` is marked as both a String and as a FK in User, but it's also its own class); verify ASAP how to procede.
+For now, `Department` will be the only domain class acting as an actual foreign key in other class (other dependencies
+listed as foreign keys are String, which can't act as Entities by themselves).
 
 ## Database, configurations & secrets
 
@@ -269,7 +269,64 @@ work properly). You'll find a small tutorial explaining this portion linked abov
 
 ## Service layer
 
-For UserService, we'll be using the BCryptPasswordEncoder import (link explaining this import above in its own section).
+For UserService, we'll be using the BCryptPasswordEncoder import (link explaining this import above in its own section),
+which will address our current cryptography needs and concerns. So, in UserService, declare the dependencies and write
+the constructor so it looks something like this:
 
+```
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+```
+
+You can instantiate the encoder as `new` since it itself doesn't need external dependencies.
+
+Now, as to the methods. First, we have the method for registering:
+
+```
+    public User register(String name, String email, String rawPassword, Department department) {
+
+        if (userRepository.findByEmail(email).isPresent())
+            throw new IllegalArgumentException("Email already registered");
+
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        User user = new User(name, email, hashedPassword, department);
+
+        return userRepository.save(user);
+    }
+```
+
+The first part of the method verifies if an email address is already registered or not in the system. Now, regarding
+the User's password, this is made much easier by the import we used. We take rawPassword passed as an argument needed
+to register a User, we hash it, and then save the User with hashedPassword. Finally, we just have to call the save
+method we previously wrote in UserRepository.
+
+Next, let's take a look at the method for logging in:
+
+```
+    public Optional<User> login(String email, String rawPassword) {
+
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword()))
+            return user;
+
+        return Optional.empty();
+    }
+```
+
+First, notice the return type here is `Optional<User>` again. The logic here is much the same as when we saw Optional
+previously: either the email and password a User gives are valid (i.e., they are a registered User), or, if not, no
+matching login is found ("nothing" happens). So, we first find the User through their email, and if that matches to a
+password stored in the system associated to this specific User, the login is successful.
 
 ## Controller layer
