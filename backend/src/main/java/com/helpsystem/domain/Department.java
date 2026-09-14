@@ -30,11 +30,21 @@ public class Department {
         this.department = department;
     }
 
-    public String getDepartment() {
+    public String getDepartmentName() {
         return department;
     }
 
     public int getId() {
         return id;
+    }
+
+    //Setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

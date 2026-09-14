@@ -1,9 +1,6 @@
 package com.helpsystem.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +18,11 @@ public class Request {
 
     private String title;
     private String question;
-    private String department;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     private String name;
     private String status;
     private LocalDateTime creationDate;
@@ -29,7 +30,7 @@ public class Request {
     protected Request() {
     }
 
-    public Request(String title, String question, String department, String name, String status,
+    public Request(String title, String question, Department department, String name, String status,
                    LocalDateTime creationDate) {
 
         if (title == null || question == null || department == null || name == null || status == null ||
@@ -57,7 +58,7 @@ public class Request {
         return question;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
@@ -71,5 +72,35 @@ public class Request {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    //Setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

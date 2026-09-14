@@ -1,9 +1,6 @@
 package com.helpsystem.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 /**
  * Class for Reply
@@ -22,13 +19,17 @@ public class Reply {
     private String answer;
     private String status;
     private String name;
-    private String department;
+
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     protected Reply() {
     }
 
     public Reply(String title, String question, String answer,
-                 String status, String name, String department) {
+                 String status, String name, Department department) {
 
         if (title == null || question == null || answer == null || status == null || name == null || department == null)
             throw new IllegalArgumentException("All fields must be properly filled out");
@@ -66,7 +67,37 @@ public class Reply {
         return name;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
+    }
+
+    //Setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

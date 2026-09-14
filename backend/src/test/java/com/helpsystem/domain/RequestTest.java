@@ -12,10 +12,11 @@ class RequestTest {
     void shouldCreateRequest() {
 
         //Arrange
+        Department department = new Department("Sales");
 
         LocalDateTime date = LocalDateTime.of(2026, 9, 8, 14, 30);
         Request request = new Request("I need help!", "Can't access my account",
-                "sales", "John Doe",
+                department, "John Doe",
                 "open", date);
 
         //Act + assert

@@ -33,6 +33,7 @@ classes);
   https://www.geeksforgeeks.org/advance-java/jpa-creating-an-entity/
   https://medium.com/@sumit.dev2148/entity-class-best-practices-and-rules-6c2a9261275b
   https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html
+  https://codingtechroom.com/question/-spring-boot-foreign-key-references
 
 - Infrastructure and MySQL:
   https://stackoverflow.com/questions/31918987/how-to-start-mysql-server-in-docker-container
@@ -47,6 +48,10 @@ classes);
   https://www.sqltutorial.org/
   https://github.com/enochtangg/quick-SQL-cheatsheet
   https://www.geeksforgeeks.org/sql/sql-describe-statement/ (small tutorial for the DESCRIBE Statement)
+  https://stackoverflow.com/questions/72994270/jpa-jpql-automatic-method-query-generation (automatic query)
+
+- On password hashing:
+  https://docs.spring.io/spring-security/reference/features/integrations/cryptography.html
 
 - General consultation for the overall structure and architecture of the project
   YouTube guide for a fullstack application: 
@@ -55,9 +60,11 @@ classes);
 
 ## Project structure
 
+//TO IMPROVE
+
 **Domain model**: to be documented and further refined, see `domain/` package.
 
-Regarding backend:
+**Regarding backend:**
 
 com.helpsystem
 |-domain (where the JPA entities reside)
@@ -65,6 +72,11 @@ com.helpsystem
 |-HelpsystemApplication
 
 (controllers/service to come later)
+
+**Regarding primary and foreign keys**:
+
+Incompatibility regarding String acting as a foreign key, which it implies a `@ManyToOne` relationship (i.e., 
+`department` is marked as both a String and as a FK in User, but it's also its own class); verify ASAP how to procede.
 
 ## Database, configurations & secrets
 
@@ -233,9 +245,31 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 And for now, that's it. We are telling Spring "this repository manages Department entities". By extending this interface,
 we are inheriting working methods such as `save()`, `findById()`, `findAll()`, and others, generated automatically
 through Spring. For now, nothing else is required for basic CRUD (Create, Read, Update, Delete) operations, though other
-more specific methods might be needed later (sources explaining how to write tests for Spring Boot apps linked above).
+more specific methods might be needed soon (sources explaining how to write tests for Spring Boot apps linked above),
+as we'll see.
+
+**Note:** Don't forget to have the database's container running when also running tests. They might fail otherwise.
+
 Now we have to write these repository classes for the remaining domain classes, while applying the same pattern.
 
+Our next step will be writing the methods necessary for a User to be able to register themselves, and, afterward, login.
+Given that a User's email is required to register, then we first need a method to find a User by their email. In
+UserRepository, you'll find the following method:
+
+```
+Optional<User> findByEmail (String email);
+```
+
+Given any email, realistically, you'll either have a User associated to it or not. As such, the return type for this
+method, Optional, will either return the User or, if not, will handle the "not found" case (and, explicitly, not risk a 
+NullPointerException). Also, you might note that we didn't write any manual SQL or logic for actually finding the email.
+Once again, we are relying on JPA, as it infers the actual SQL from the method's name automatically (note that it only
+works because we wrote "Email" exactly as the field declared in User; had we wrote "findByMail", the method wouldn't 
+work properly). You'll find a small tutorial explaining this portion linked above.
+
 ## Service layer
+
+For UserService, we'll be using the BCryptPasswordEncoder import (link explaining this import above in its own section).
+
 
 ## Controller layer

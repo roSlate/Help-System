@@ -22,6 +22,6 @@ class DepartmentRepositoryTest {
         assertThat(saved.getId()).isGreaterThan(0);
 
         Department found = departmentRepository.findById(saved.getId()).orElseThrow();
-        assertThat(found.getDepartment()).isEqualTo("Sales");
+        assertThat(found.getDepartmentName()).isEqualTo("Sales");
     }
 }

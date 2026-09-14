@@ -1,9 +1,6 @@
 package com.helpsystem.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 /**
  * Class for a User
@@ -19,14 +16,17 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String department;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     //Empty, required by JPA
     protected User() {
     }
 
     //Constructor
-    public User(String name, String email, String password, String department) {
+    public User(String name, String email, String password, Department department) {
 
         if (name == null || email == null || password == null || department == null)
             throw new IllegalArgumentException("All fields are mandatory for registration");
@@ -50,8 +50,12 @@ public class User {
         return email;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     //Setters
@@ -71,7 +75,7 @@ public class User {
         this.email = email;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 }

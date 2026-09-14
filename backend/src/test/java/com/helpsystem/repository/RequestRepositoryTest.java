@@ -1,5 +1,6 @@
 package com.helpsystem.repository;
 
+import com.helpsystem.domain.Department;
 import com.helpsystem.domain.Request;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,21 @@ class RequestRepositoryTest {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
     @Test
     void shouldSaveAndRetrieveRequest() {
+
+        //Arrange
+        Department department = departmentRepository.save(new Department("HR"));
 
         LocalDateTime date = LocalDateTime.now();
         date = date.truncatedTo(ChronoUnit.SECONDS);
         Request request = new Request("Help!", "How do I do this?",
-                "HR", "Jane Doe", "very serious", date);
+                department, "Jane Doe", "very serious", date);
+
+        //Act + assert
 
         Request saved = requestRepository.save(request);
 
@@ -33,7 +42,7 @@ class RequestRepositoryTest {
         assertThat(found.getQuestion()).isEqualTo("How do I do this?");
         assertThat(found.getStatus()).isEqualTo("very serious");
         assertThat(found.getName()).isEqualTo("Jane Doe");
-        assertThat(found.getDepartment()).isEqualTo("HR");
+        assertThat(found.getDepartment().getDepartmentName()).isEqualTo("HR");
         assertThat(found.getCreationDate()).isEqualTo(date);
     }
 }
