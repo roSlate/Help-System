@@ -12,9 +12,11 @@ class RequestTest {
     void shouldCreateRequest() {
 
         //Arrange
+
+        LocalDateTime date = LocalDateTime.of(2026, 9, 8, 14, 30);
         Request request = new Request("I need help!", "Can't access my account",
                 "sales", "John Doe",
-                "open", LocalDateTime.of(2026, 9, 8, 14, 30));
+                "open", date);
 
         //Act + assert
         assertThat(request.getTitle()).isEqualTo("I need help!");
@@ -22,5 +24,6 @@ class RequestTest {
         assertThat(request.getDepartment()).isEqualTo("sales");
         assertThat(request.getName()).isEqualTo("John Doe");
         assertThat(request.getStatus()).isEqualTo("open");
+        assertThat(request.getCreationDate()).isEqualTo(date);
     }
 }
