@@ -1,15 +1,12 @@
+import AppLayout from '../layouts/AppLayout/AppLayout.jsx'
 import Header from '../blocks/Header.jsx'
-import Footer from '../blocks/Footer.jsx'
 
 function Home() {
   return (
-    <>
+    <AppLayout>
       <Header />
-      <main>
-        <p>Post a question, or browse existing ones.</p>
-      </main>
-      <Footer />
-    </>
+      <p className="rubik-body">Post a question, or browse existing ones.</p>
+    </AppLayout>
   )
 }
 

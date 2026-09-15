@@ -48,12 +48,52 @@
   --color-icon: #334155;
   --color-icon-dark: #0F172A;
 
+  /* spacing (multiples of 4) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-full: 999px;
+
+  /* font size / line height (line heights multiples of 4) */
+  --text-xs: 12px;
+  --leading-xs: 16px;
+  --text-sm: 14px;
+  --leading-sm: 20px;
+  --text-base: 16px;
+  --leading-base: 24px;
+  --text-lg: 20px;
+  --leading-lg: 28px;
+  --text-xl: 24px;
+  --leading-xl: 32px;
+
+  /* font weight */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --weight-bold: 800;
+
   font: 16px/1.5 var(--font-body);
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 body {
   margin: 0;
   background: var(--gradient-main);
+  overflow: hidden;
 }
 
 h1,
@@ -66,56 +106,66 @@ h3 {
 /* Sora sizing */
 .sora-title {
   font-family: var(--font-heading);
-  font-style: normal;
-  font-weight: 800;
-  font-size: 22px;
-  line-height: 28px;
+  font-weight: var(--weight-bold);
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  color: #000000;
+}
+
+.sora-brand {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-lg);
+  line-height: var(--leading-lg);
   color: #000000;
 }
 
 .sora-subtitle {
   font-family: var(--font-heading);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 15px;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
   color: #000000;
 }
 
 .sora-text {
   font-family: var(--font-heading);
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
+  font-weight: var(--weight-regular);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
   color: #000000;
 }
 
 /* Rubik sizing */
 .rubik-title {
   font-family: var(--font-body);
-  font-style: normal;
-  font-weight: 800;
-  font-size: 22px;
-  line-height: 26px;
+  font-weight: var(--weight-bold);
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  color: #000000;
+}
+
+.rubik-body {
+  font-family: var(--font-body);
+  font-weight: var(--weight-regular);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
   color: #000000;
 }
 
 .rubik-subtitle {
   font-family: var(--font-body);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 14px;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
   color: #000000;
 }
 
 .rubik-text {
   font-family: var(--font-body);
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
+  font-weight: var(--weight-regular);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
   color: #000000;
 }
 
@@ -134,14 +184,28 @@ h3 {
 .status {
   display: inline-block;
   box-sizing: border-box;
-  padding: 10px 24px;
+  padding: var(--space-3) var(--space-6);
   background: var(--color-green-mid);
   border: 2px solid #FFFFFF;
-  border-radius: 40px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
   font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 26px;
-  line-height: 33px;
+  font-weight: var(--weight-bold);
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
   text-align: center;
   color: #FFFFFF;
+}
+
+/* Status colors: primary mid shades */
+.status-open {
+  background: var(--color-orange-mid);
+}
+
+.status-progress {
+  background: var(--color-blue-mid);
+}
+
+.status-resolved {
+  background: var(--color-green-mid);
 }
