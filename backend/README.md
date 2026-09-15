@@ -53,12 +53,14 @@ classes);
 - On password hashing:
   https://docs.spring.io/spring-security/reference/features/integrations/cryptography.html
 
-- DTOs:
+- DTOs and JSON:
   https://medium.com/@roshanfarakate/understanding-dtos-in-spring-boot-a-comprehensive-guide-20e2b8101ee6
+  https://www.baeldung.com/spring-boot-json
 
 - Controllers:
   https://www.baeldung.com/spring-controllers
   https://www.jetbrains.com/guide/java/tutorials/your-first-spring-application/creating-spring-controller/
+  https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Record.html
 
 - HTTP status codes:
   https://restfulapi.net/http-status-codes/
@@ -87,6 +89,8 @@ com.helpsystem
 
 For now, `Department` will be the only domain class acting as an actual foreign key in other class (other dependencies
 listed as foreign keys are String, which can't act as Entities by themselves).
+
+15/09: Attempting to do the same regarding `Reply` and `Request`.
 
 ## Database, configurations & secrets
 
@@ -354,8 +358,80 @@ previously: either the email and password a User gives are valid (i.e., they are
 matching login is found ("nothing" happens). So, we first find the User through their email, and if that matches to a
 password stored in the system associated to this specific User, the login is successful.
 
-## Creating some DTOs
+## Creating some Data Transfer Objects (DTOs)
 
+We should now introduce two small classes that we'll need to help us write our Controller classes soon. The purpose is
+mostly related to separation of concerns and security so Users only see/input that which they absolutely must. As such,
+in a given DTO, we define the data expected when, for example, handling a User's authentication:
 
+```
+public class RegisterRequest {
+
+    private String name;
+    private String email;
+    private String password;
+    private String department;
+
+    //getters and setters
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+
+    public String getEmail () {return email;}
+    public void setEmail(String email) {this.email = email;}
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+
+    public String getDepartment() {return department;}
+    public void setDepartment(String department) {this.department = department;}
+}
+```
+
+This will allow the controller to receive only the information required for registration instead of exposing a `User`
+object. Now for the LoginRequest:
+
+```
+package com.helpsystem.dto;
+
+public class LoginRequest {
+
+    private String email;
+    private String password;
+
+    public String getEmail() {return email;}
+    public void setEmail(String email) {this.email = email;}
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+}
+
+```
+
+The logic is the same here, but for the login request: a given User, once registered, only needs to provide their email
+and password and, this way, we ensure the API only accepts this necessary data for this specific operation (i.e., 
+logging in). In short, DTOs are good for setting boundaries between the API layer and the domain model.
 
 ## Controller layer
+
+We arrived to our last layer and the one which, generally speaking, acts as a direct entry point that receives input 
+from the frontend. Let's jump into analyzing our Controller's syntax and methods:
+
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+```
+
+`@RestController` marks this class as a Spring Controller whose methods return data directly, usually in JSON, format;
+it also marks it as a web endpoint handler, with which method corresponding to a different endpoint
+.`@RequestMapping("/users")`, in turn, makes it so every method maps to this prefix, resulting in`@PostMapping
+("/register")` translating to `POST /users/register`.
+
+## Connecting backend and frontend
