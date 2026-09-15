@@ -33,6 +33,7 @@ classes);
   https://www.geeksforgeeks.org/advance-java/jpa-creating-an-entity/
   https://medium.com/@sumit.dev2148/entity-class-best-practices-and-rules-6c2a9261275b
   https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html
+  https://codingtechroom.com/question/-spring-boot-foreign-key-references
 
 - Infrastructure and MySQL:
   https://stackoverflow.com/questions/31918987/how-to-start-mysql-server-in-docker-container
@@ -47,6 +48,22 @@ classes);
   https://www.sqltutorial.org/
   https://github.com/enochtangg/quick-SQL-cheatsheet
   https://www.geeksforgeeks.org/sql/sql-describe-statement/ (small tutorial for the DESCRIBE Statement)
+  https://stackoverflow.com/questions/72994270/jpa-jpql-automatic-method-query-generation (automatic query)
+
+- On password hashing:
+  https://docs.spring.io/spring-security/reference/features/integrations/cryptography.html
+
+- DTOs and JSON:
+  https://medium.com/@roshanfarakate/understanding-dtos-in-spring-boot-a-comprehensive-guide-20e2b8101ee6
+  https://www.baeldung.com/spring-boot-json
+
+- Controllers:
+  https://www.baeldung.com/spring-controllers
+  https://www.jetbrains.com/guide/java/tutorials/your-first-spring-application/creating-spring-controller/
+  https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Record.html
+
+- HTTP status codes:
+  https://restfulapi.net/http-status-codes/
 
 - General consultation for the overall structure and architecture of the project
   YouTube guide for a fullstack application: 
@@ -55,9 +72,11 @@ classes);
 
 ## Project structure
 
+//TO IMPROVE
+
 **Domain model**: to be documented and further refined, see `domain/` package.
 
-Regarding backend:
+**Regarding backend:**
 
 com.helpsystem
 |-domain (where the JPA entities reside)
@@ -65,6 +84,13 @@ com.helpsystem
 |-HelpsystemApplication
 
 (controllers/service to come later)
+
+**Regarding primary and foreign keys**:
+
+For now, `Department` will be the only domain class acting as an actual foreign key in other class (other dependencies
+listed as foreign keys are String, which can't act as Entities by themselves).
+
+15/09: Attempting to do the same regarding `Reply` and `Request`.
 
 ## Database, configurations & secrets
 
@@ -120,7 +146,7 @@ mysql> SHOW TABLES;
 +----------------------+
 | Tables_in_helpsystem |
 +----------------------+
-| department           |
+| departmentName           |
 | reply                |
 | request              |
 | user                 |
@@ -133,7 +159,7 @@ accomplish this, the first being writing manual SQL. For this, we still need to 
 you exited it, just run the docker command we used in the paragraph above. If you struggle with SQL, there are two
 resources linked above which should help you interact the database for the project's purposes.
 
-First, we tried inserting some data in the `department` table: `INSERT INTO department (department) VALUES ('Sales');`.
+First, we tried inserting some data in the `departmentName` table: `INSERT INTO departmentName (departmentName) VALUES ('Sales');`.
 You don't need to specify `id` because it's generated automatically:
 
 ```
@@ -142,16 +168,16 @@ You don't need to specify `id` because it's generated automatically:
     private int id;
 ```
 
-After running this command, verify if `Sales` was inserted into the chosen table. Run `SELECT * FROM department` and
+After running this command, verify if `Sales` was inserted into the chosen table. Run `SELECT * FROM departmentName` and
 the output should be the following:
 
 ```
-mysql> INSERT INTO department (department) VALUES ('Sales');
+mysql> INSERT INTO departmentName (departmentName) VALUES ('Sales');
 Query OK, 1 row affected (0.03 sec)
 
-mysql> SELECT * FROM department;
+mysql> SELECT * FROM departmentName;
 +----+------------+
-| id | department |
+| id | departmentName |
 +----+------------+
 |  1 | Sales      |
 +----+------------+
@@ -160,8 +186,8 @@ mysql> SELECT * FROM department;
 mysql>
 ```
 
-Keep in mind that `department` is a very simple table because you only have two parameters, and one of them, `id`, is
-generated automatically. As such, we only needed to specify the `department` column (which might be confusing, as that
+Keep in mind that `departmentName` is a very simple table because you only have two parameters, and one of them, `id`, is
+generated automatically. As such, we only needed to specify the `departmentName` column (which might be confusing, as that
 column shares its name with the table's name).
 
 Let's try to insert something to a more complex table, such as `reply`. If you're not sure what parameters a given 
@@ -174,7 +200,7 @@ mysql> DESCRIBE reply;
 +------------+--------------+------+-----+---------+----------------+
 | id         | int          | NO   | PRI | NULL    | auto_increment |
 | answer     | varchar(255) | YES  |     | NULL    |                |
-| department | varchar(255) | YES  |     | NULL    |                |
+| departmentName | varchar(255) | YES  |     | NULL    |                |
 | name       | varchar(255) | YES  |     | NULL    |                |
 | question   | varchar(255) | YES  |     | NULL    |                |
 | status     | varchar(255) | YES  |     | NULL    |                |
@@ -189,7 +215,7 @@ Given we have all of these parameters, inserting something manually is a little 
 Now, we just have to match each `Field` (column, ordered alphabetically after id) to a corresponding value:
 
 ```
-INSERT INTO reply (title, question, answer, status, name, department) VALUES ('Help!', 'How do I do this?', 
+INSERT INTO reply (title, question, answer, status, name, departmentName) VALUES ('Help!', 'How do I do this?', 
 'Like this!', 'Open', 'Johnny Doe', 'Sales');
 ```
 
@@ -198,7 +224,7 @@ Run this command, and, afterward, run the `SELECT` command one more time for `re
 ```
 mysql> SELECT * FROM reply;
 +----+------------+------------+------------+-------------------+--------+-------+
-| id | answer     | department | name       | question          | status | title |
+| id | answer     | departmentName | name       | question          | status | title |
 +----+------------+------------+------------+-------------------+--------+-------+
 |  1 | Like this! | Sales      | Johnny Doe | How do I do this? | Open   | Help! |
 +----+------------+------------+------------+-------------------+--------+-------+
@@ -233,9 +259,179 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
 And for now, that's it. We are telling Spring "this repository manages Department entities". By extending this interface,
 we are inheriting working methods such as `save()`, `findById()`, `findAll()`, and others, generated automatically
 through Spring. For now, nothing else is required for basic CRUD (Create, Read, Update, Delete) operations, though other
-more specific methods might be needed later (sources explaining how to write tests for Spring Boot apps linked above).
+more specific methods might be needed soon (sources explaining how to write tests for Spring Boot apps linked above),
+as we'll see.
+
+**Note:** Don't forget to have the database's container running when also running tests. They might fail otherwise.
+
 Now we have to write these repository classes for the remaining domain classes, while applying the same pattern.
+
+Our next step will be writing the methods necessary for a User to be able to register themselves, and, afterward, login.
+Given that a User's email is required to register, then we first need a method to find a User by their email. In
+UserRepository, you'll find the following method:
+
+```
+Optional<User> findByEmail (String email);
+```
+
+Given any email, realistically, you'll either have a User associated to it or not. As such, the return type for this
+method, Optional, will either return the User or, if not, will handle the "not found" case (and, explicitly, not risk a 
+NullPointerException). Also, you might note that we didn't write any manual SQL or logic for actually finding the email.
+Once again, we are relying on JPA, as it infers the actual SQL from the method's name automatically (note that it only
+works because we wrote "Email" exactly as the field declared in User; had we wrote "findByMail", the method wouldn't 
+work properly). You'll find a small tutorial explaining this portion linked above.
+
+We also need to create a similar method in DepartmentRepository:
+
+```
+Optional<Department> findByDepartmentName(String departmentName);
+```
+
+This way, a User will just have to pass a String and not interact with an actual Department object.
 
 ## Service layer
 
+For UserService, we'll be using the BCryptPasswordEncoder import (link explaining this import above in its own section),
+which will address our current cryptography needs and concerns. So, in UserService, declare the dependencies and write
+the constructor so it looks something like this:
+
+```
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository, DepartmentRepository departmentRepository) {
+
+        this.userRepository = userRepository;
+        this.departmentRepository = departmentRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+```
+
+You can instantiate the encoder as `new` since it itself doesn't need external dependencies.
+
+Now, as to the methods. First, we have the method for registering:
+
+```
+    public User register(String name, String email, String rawPassword, String departmentName) {
+
+        if (userRepository.findByEmail(email).isPresent())
+            throw new IllegalArgumentException("Email already registered");
+
+        Department department = departmentRepository.findByDepartmentName(departmentName)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found: " + departmentName));
+
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        User user = new User(name, email, hashedPassword, department);
+
+        return userRepository.save(user);
+    }
+```
+
+The first part of the method verifies if an email address is already registered or not in the system.  Then, we verify
+if the Department that the User wrote exists or not, which is why 
+
+Now, regarding the User's password, this is made much easier by the import we used. We take rawPassword passed as 
+an argument needed to register a User, we hash it, and then save the User with hashedPassword. Finally, we just have 
+to call the save method we previously wrote in UserRepository.
+
+Next, let's take a look at the method for logging in:
+
+```
+    public Optional<User> login(String email, String rawPassword) {
+
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword()))
+            return user;
+
+        return Optional.empty();
+    }
+```
+
+First, notice the return type here is `Optional<User>` again. The logic here is much the same as when we saw Optional
+previously: either the email and password a User gives are valid (i.e., they are a registered User), or, if not, no
+matching login is found ("nothing" happens). So, we first find the User through their email, and if that matches to a
+password stored in the system associated to this specific User, the login is successful.
+
+## Creating some Data Transfer Objects (DTOs)
+
+We should now introduce two small classes that we'll need to help us write our Controller classes soon. The purpose is
+mostly related to separation of concerns and security so Users only see/input that which they absolutely must. As such,
+in a given DTO, we define the data expected when, for example, handling a User's authentication:
+
+```
+public class RegisterRequest {
+
+    private String name;
+    private String email;
+    private String password;
+    private String department;
+
+    //getters and setters
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
+
+    public String getEmail () {return email;}
+    public void setEmail(String email) {this.email = email;}
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+
+    public String getDepartment() {return department;}
+    public void setDepartment(String department) {this.department = department;}
+}
+```
+
+This will allow the controller to receive only the information required for registration instead of exposing a `User`
+object. Now for the LoginRequest:
+
+```
+package com.helpsystem.dto;
+
+public class LoginRequest {
+
+    private String email;
+    private String password;
+
+    public String getEmail() {return email;}
+    public void setEmail(String email) {this.email = email;}
+
+    public String getPassword() {return password;}
+    public void setPassword(String password) {this.password = password;}
+}
+
+```
+
+The logic is the same here, but for the login request: a given User, once registered, only needs to provide their email
+and password and, this way, we ensure the API only accepts this necessary data for this specific operation (i.e., 
+logging in). In short, DTOs are good for setting boundaries between the API layer and the domain model.
+
 ## Controller layer
+
+We arrived to our last layer and the one which, generally speaking, acts as a direct entry point that receives input 
+from the frontend. Let's jump into analyzing our Controller's syntax and methods:
+
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+```
+
+`@RestController` marks this class as a Spring Controller whose methods return data directly, usually in JSON, format;
+it also marks it as a web endpoint handler, with which method corresponding to a different endpoint
+.`@RequestMapping("/users")`, in turn, makes it so every method maps to this prefix, resulting in`@PostMapping
+("/register")` translating to `POST /users/register`.
+
+## Connecting backend and frontend

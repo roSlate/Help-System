@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 
 /**
  * Class for Department
- * Each user belongs to a department
+ * Each user belongs to a departmentName
  */
 
 @Entity
@@ -17,24 +17,36 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    String department;
+    // find a way to make this protected so it's unique (i.e., if "HR" already exists, do not allow
+    // for repeated creation)
+    String departmentName;
 
     protected Department() {
     }
 
-    public Department(String department) {
+    public Department(String departmentName) {
 
-        if (department == null)
+        if (departmentName == null)
             throw new IllegalArgumentException("Department cannot be null");
 
-        this.department = department;
+        this.departmentName = departmentName;
     }
 
-    public String getDepartment() {
-        return department;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
     public int getId() {
         return id;
+    }
+
+    //Setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 }

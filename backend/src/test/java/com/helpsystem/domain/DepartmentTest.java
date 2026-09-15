@@ -13,6 +13,6 @@ class DepartmentTest {
         Department department = new Department("sales");
 
         //Act + assert
-        assertThat(department.getDepartment()).isEqualTo("sales");
+        assertThat(department.getDepartmentName()).isEqualTo("sales");
     }
 }
