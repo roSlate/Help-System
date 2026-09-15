@@ -1,15 +1,15 @@
 import Header from '../blocks/Header.jsx'
-import Footer from '../blocks/Footer.jsx'
+import BottomNav from '../blocks/BottomNav/BottomNav.jsx'
 
 function Home() {
   return (
-    <>
-      <Header />
-      <main>
-        <p>Post a question, or browse existing ones.</p>
+    <div className="app-shell">
+      <main className="app-content">
+        <Header />
+        <p className="rubik-body">Post a question, or browse existing ones.</p>
       </main>
-      <Footer />
-    </>
+      <BottomNav />
+    </div>
   )
 }
 

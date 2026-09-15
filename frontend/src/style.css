@@ -93,6 +93,27 @@ body,
 body {
   margin: 0;
   background: var(--gradient-main);
+  overflow: hidden;
+}
+
+/* App shell: page is the viewport, only blocks scroll */
+.app-shell {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-6);
+  height: 100%;
+  padding: var(--space-6);
+}
+
+.app-content {
+  min-height: 0;
+}
+
+/* Scroll container for a block inside .app-content */
+.scroll-area {
+  height: 100%;
+  overflow-y: auto;
 }
 
 h1,
