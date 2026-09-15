@@ -53,6 +53,16 @@ classes);
 - On password hashing:
   https://docs.spring.io/spring-security/reference/features/integrations/cryptography.html
 
+- DTOs:
+  https://medium.com/@roshanfarakate/understanding-dtos-in-spring-boot-a-comprehensive-guide-20e2b8101ee6
+
+- Controllers:
+  https://www.baeldung.com/spring-controllers
+  https://www.jetbrains.com/guide/java/tutorials/your-first-spring-application/creating-spring-controller/
+
+- HTTP status codes:
+  https://restfulapi.net/http-status-codes/
+
 - General consultation for the overall structure and architecture of the project
   YouTube guide for a fullstack application: 
   https://www.youtube.com/watch?v=lUVureR5GqI&list=WL&index=10 (Brazilian Portuguese)
@@ -132,7 +142,7 @@ mysql> SHOW TABLES;
 +----------------------+
 | Tables_in_helpsystem |
 +----------------------+
-| department           |
+| departmentName           |
 | reply                |
 | request              |
 | user                 |
@@ -145,7 +155,7 @@ accomplish this, the first being writing manual SQL. For this, we still need to 
 you exited it, just run the docker command we used in the paragraph above. If you struggle with SQL, there are two
 resources linked above which should help you interact the database for the project's purposes.
 
-First, we tried inserting some data in the `department` table: `INSERT INTO department (department) VALUES ('Sales');`.
+First, we tried inserting some data in the `departmentName` table: `INSERT INTO departmentName (departmentName) VALUES ('Sales');`.
 You don't need to specify `id` because it's generated automatically:
 
 ```
@@ -154,16 +164,16 @@ You don't need to specify `id` because it's generated automatically:
     private int id;
 ```
 
-After running this command, verify if `Sales` was inserted into the chosen table. Run `SELECT * FROM department` and
+After running this command, verify if `Sales` was inserted into the chosen table. Run `SELECT * FROM departmentName` and
 the output should be the following:
 
 ```
-mysql> INSERT INTO department (department) VALUES ('Sales');
+mysql> INSERT INTO departmentName (departmentName) VALUES ('Sales');
 Query OK, 1 row affected (0.03 sec)
 
-mysql> SELECT * FROM department;
+mysql> SELECT * FROM departmentName;
 +----+------------+
-| id | department |
+| id | departmentName |
 +----+------------+
 |  1 | Sales      |
 +----+------------+
@@ -172,8 +182,8 @@ mysql> SELECT * FROM department;
 mysql>
 ```
 
-Keep in mind that `department` is a very simple table because you only have two parameters, and one of them, `id`, is
-generated automatically. As such, we only needed to specify the `department` column (which might be confusing, as that
+Keep in mind that `departmentName` is a very simple table because you only have two parameters, and one of them, `id`, is
+generated automatically. As such, we only needed to specify the `departmentName` column (which might be confusing, as that
 column shares its name with the table's name).
 
 Let's try to insert something to a more complex table, such as `reply`. If you're not sure what parameters a given 
@@ -186,7 +196,7 @@ mysql> DESCRIBE reply;
 +------------+--------------+------+-----+---------+----------------+
 | id         | int          | NO   | PRI | NULL    | auto_increment |
 | answer     | varchar(255) | YES  |     | NULL    |                |
-| department | varchar(255) | YES  |     | NULL    |                |
+| departmentName | varchar(255) | YES  |     | NULL    |                |
 | name       | varchar(255) | YES  |     | NULL    |                |
 | question   | varchar(255) | YES  |     | NULL    |                |
 | status     | varchar(255) | YES  |     | NULL    |                |
@@ -201,7 +211,7 @@ Given we have all of these parameters, inserting something manually is a little 
 Now, we just have to match each `Field` (column, ordered alphabetically after id) to a corresponding value:
 
 ```
-INSERT INTO reply (title, question, answer, status, name, department) VALUES ('Help!', 'How do I do this?', 
+INSERT INTO reply (title, question, answer, status, name, departmentName) VALUES ('Help!', 'How do I do this?', 
 'Like this!', 'Open', 'Johnny Doe', 'Sales');
 ```
 
@@ -210,7 +220,7 @@ Run this command, and, afterward, run the `SELECT` command one more time for `re
 ```
 mysql> SELECT * FROM reply;
 +----+------------+------------+------------+-------------------+--------+-------+
-| id | answer     | department | name       | question          | status | title |
+| id | answer     | departmentName | name       | question          | status | title |
 +----+------------+------------+------------+-------------------+--------+-------+
 |  1 | Like this! | Sales      | Johnny Doe | How do I do this? | Open   | Help! |
 +----+------------+------------+------------+-------------------+--------+-------+
@@ -267,6 +277,14 @@ Once again, we are relying on JPA, as it infers the actual SQL from the method's
 works because we wrote "Email" exactly as the field declared in User; had we wrote "findByMail", the method wouldn't 
 work properly). You'll find a small tutorial explaining this portion linked above.
 
+We also need to create a similar method in DepartmentRepository:
+
+```
+Optional<Department> findByDepartmentName(String departmentName);
+```
+
+This way, a User will just have to pass a String and not interact with an actual Department object.
+
 ## Service layer
 
 For UserService, we'll be using the BCryptPasswordEncoder import (link explaining this import above in its own section),
@@ -279,11 +297,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final DepartmentRepository departmentRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, DepartmentRepository departmentRepository) {
 
         this.userRepository = userRepository;
+        this.departmentRepository = departmentRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 ```
@@ -293,10 +313,13 @@ You can instantiate the encoder as `new` since it itself doesn't need external d
 Now, as to the methods. First, we have the method for registering:
 
 ```
-    public User register(String name, String email, String rawPassword, Department department) {
+    public User register(String name, String email, String rawPassword, String departmentName) {
 
         if (userRepository.findByEmail(email).isPresent())
             throw new IllegalArgumentException("Email already registered");
+
+        Department department = departmentRepository.findByDepartmentName(departmentName)
+                .orElseThrow(() -> new IllegalArgumentException("Department not found: " + departmentName));
 
         String hashedPassword = passwordEncoder.encode(rawPassword);
         User user = new User(name, email, hashedPassword, department);
@@ -305,10 +328,12 @@ Now, as to the methods. First, we have the method for registering:
     }
 ```
 
-The first part of the method verifies if an email address is already registered or not in the system. Now, regarding
-the User's password, this is made much easier by the import we used. We take rawPassword passed as an argument needed
-to register a User, we hash it, and then save the User with hashedPassword. Finally, we just have to call the save
-method we previously wrote in UserRepository.
+The first part of the method verifies if an email address is already registered or not in the system.  Then, we verify
+if the Department that the User wrote exists or not, which is why 
+
+Now, regarding the User's password, this is made much easier by the import we used. We take rawPassword passed as 
+an argument needed to register a User, we hash it, and then save the User with hashedPassword. Finally, we just have 
+to call the save method we previously wrote in UserRepository.
 
 Next, let's take a look at the method for logging in:
 
@@ -328,5 +353,9 @@ First, notice the return type here is `Optional<User>` again. The logic here is 
 previously: either the email and password a User gives are valid (i.e., they are a registered User), or, if not, no
 matching login is found ("nothing" happens). So, we first find the User through their email, and if that matches to a
 password stored in the system associated to this specific User, the login is successful.
+
+## Creating some DTOs
+
+
 
 ## Controller layer

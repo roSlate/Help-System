@@ -3,7 +3,6 @@ package com.helpsystem.service;
 import com.helpsystem.domain.Department;
 import com.helpsystem.domain.User;
 import com.helpsystem.repository.DepartmentRepository;
-import com.helpsystem.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,23 +17,19 @@ class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private DepartmentRepository departmentRepository;
 
-//    @Test
-//    void shouldRegisterUserWithHashedPassword() {
-//
-//        //Arrange
-//        Department department = departmentRepository.save(new Department("Engineering"));
-//
-//        User registered = userService.register("Alice", "alice@example.com",
-//                "mypassword", department);
-//
-//        //Act + assert
-//        assertThat(registered.getPassword()).isEqualTo(
-//                "$2a$10$BRBv.PcpzJq4/M8Q2AqJEeIJqB8xp06s0nEIFbYIiKnhQoQzFJU36");
-//    }
+    @Test
+    void shouldRegisterUserWithHashedPassword() {
+
+        //Arrange
+        Department department = departmentRepository.save(new Department("Engineering"));
+
+        User registered = userService.register("Alice", "alice@example.com",
+                "mypassword", "Engineering");
+
+        //Act + assert
+        assertThat(registered.getPassword()).isNotEqualTo("mypassword");
+    }
 
 }
