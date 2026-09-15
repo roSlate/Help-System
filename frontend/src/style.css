@@ -110,6 +110,14 @@ body {
   min-height: 0;
 }
 
+/* Sidebar + main area inside .app-content */
+.app-main {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-6);
+  height: 100%;
+}
+
 /* Scroll container for a block inside .app-content */
 .scroll-area {
   height: 100%;
