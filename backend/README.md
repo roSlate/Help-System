@@ -69,6 +69,7 @@ classes);
   https://www.baeldung.com/spring-cors
   https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
   https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+  https://medium.com/@bhargavkanjarla01/how-to-combine-a-java-spring-boot-back-end-with-a-reactjs-front-end-app-ed8d8ca65285
 
 - HTTP status codes:
   https://restfulapi.net/http-status-codes/
