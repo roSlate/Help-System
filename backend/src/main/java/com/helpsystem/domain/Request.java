@@ -22,25 +22,27 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private String name;
     private String status;
     private LocalDateTime creationDate;
 
     protected Request() {
     }
 
-    public Request(String title, String question, Department department, String name, String status,
-                   LocalDateTime creationDate) {
+    public Request(String title, String question, Department department, User user, String status,
+                    LocalDateTime creationDate) {
 
-        if (title == null || question == null || department == null || name == null || status == null ||
+        if (title == null || question == null || department == null || user == null || status == null ||
                 creationDate == null)
             throw new IllegalArgumentException("All fields must be properly filled out");
 
         this.title = title;
         this.question = question;
         this.department = department;
-        this.name = name;
+        this.user = user;
         this.status = status;
         this.creationDate = creationDate;
     }
@@ -62,8 +64,8 @@ public class Request {
         return department;
     }
 
-    public String getName() {
-        return name;
+    public User getUser() {
+        return user;
     }
 
     public String getStatus() {
@@ -88,12 +90,12 @@ public class Request {
         this.status = status;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setQuestion(String question) {

@@ -61,6 +61,15 @@ classes);
   https://www.baeldung.com/spring-controllers
   https://www.jetbrains.com/guide/java/tutorials/your-first-spring-application/creating-spring-controller/
   https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Record.html
+  https://docs.spring.io/spring-framework/reference/testing/mockmvc.html (useful for testing controllers)
+  https://www.baeldung.com/spring-mockmvc-vs-webmvctest
+  https://www.baeldung.com/jackson-object-mapper-tutorial (also used for tests)
+
+- Connect backend and frontend:
+  https://www.baeldung.com/spring-cors
+  https://spring.io/blog/2015/06/08/cors-support-in-spring-framework
+  https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS
+  https://medium.com/@bhargavkanjarla01/how-to-combine-a-java-spring-boot-back-end-with-a-reactjs-front-end-app-ed8d8ca65285
 
 - HTTP status codes:
   https://restfulapi.net/http-status-codes/
@@ -431,7 +440,53 @@ public class UserController {
 
 `@RestController` marks this class as a Spring Controller whose methods return data directly, usually in JSON, format;
 it also marks it as a web endpoint handler, with which method corresponding to a different endpoint
-.`@RequestMapping("/users")`, in turn, makes it so every method maps to this prefix, resulting in`@PostMapping
+.`@RequestMapping("/users")`, in turn, makes it so every method maps to this prefix, resulting in (eventually)`@PostMapping
 ("/register")` translating to `POST /users/register`.
 
+Let's now take a look at the method for registering a User:
+
+```
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request) {
+
+        try {
+
+            User user = userService.register(
+                    request.getName(), request.getEmail(), request.getPassword(), request.getDepartment());
+
+            return ResponseEntity.ok(new UserSummary(user.getId(), user.getName(), user.getEmail()));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+```
+
+TODO: Explain later this method and also the method for logging in***
+
+```
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        Optional<User> userLogging = userService.login(request.getEmail(), request.getPassword());
+
+        if (userLogging.isPresent()) {
+            User user = userLogging.get();
+            return ResponseEntity.ok(new UserSummary(user.getId(), user.getName(), user.getEmail()));
+        }
+
+        return ResponseEntity.status(401).body("Invalid email or password");
+    }
+```
+
+Also explain UserSummary:
+
+```
+    private record UserSummary(int id, String name, String email) {}
+```
+
 ## Connecting backend and frontend
+
+
+
+## Regarding authentication
