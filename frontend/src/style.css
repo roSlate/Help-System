@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap');
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* fonts */
   --font-heading: 'Sora', sans-serif;
@@ -92,7 +92,8 @@ body,
 
 body {
   margin: 0;
-  background: var(--gradient-main);
+  /* the gradient is mostly transparent, so it needs a solid dark base under it */
+  background: var(--gradient-main), var(--color-panel);
   overflow: hidden;
 }
 
