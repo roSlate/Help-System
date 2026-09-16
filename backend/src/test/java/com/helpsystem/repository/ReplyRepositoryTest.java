@@ -2,9 +2,13 @@ package com.helpsystem.repository;
 
 import com.helpsystem.domain.Department;
 import com.helpsystem.domain.Reply;
+import com.helpsystem.domain.Request;
+import com.helpsystem.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -16,6 +20,10 @@ class ReplyRepositoryTest {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RequestRepository requestRepository;
 
     @Test
     void shouldSaveAndRetrieveReply() {
@@ -23,8 +31,10 @@ class ReplyRepositoryTest {
         //Arrange
         Department department = departmentRepository.save(new Department("HR"));
 
-        Reply reply = new Reply("Help!", "How do I do this?",
-                "Do it like this!", "very serious", "Jane Doe", department);
+        User user = userRepository.save(new User("Jane Doe","JaneDoe@mail.com","password", department));
+        Request request = requestRepository.save(new Request("Help!", "How do I do this?", department, user,
+                "very serious", LocalDateTime.now()));
+        Reply reply = new Reply("Do it like this!", request, user, department);
 
         Reply saved = replyRepository.save(reply);
 
@@ -34,11 +44,11 @@ class ReplyRepositoryTest {
 
         Reply found = replyRepository.findById(saved.getId()).orElseThrow();
 
-        assertThat(found.getTitle()).isEqualTo("Help!");
-        assertThat(found.getQuestion()).isEqualTo("How do I do this?");
+        assertThat(found.getRequest().getTitle()).isEqualTo("Help!");
+        assertThat(found.getRequest().getQuestion()).isEqualTo("How do I do this?");
         assertThat(found.getAnswer()).isEqualTo("Do it like this!");
-        assertThat(found.getStatus()).isEqualTo("very serious");
-        assertThat(found.getName()).isEqualTo("Jane Doe");
+        assertThat(found.getRequest().getStatus()).isEqualTo("very serious");
+        assertThat(found.getUser().getName()).isEqualTo("Jane Doe");
         assertThat(found.getDepartment().getDepartmentName()).isEqualTo("HR");
     }
 }
