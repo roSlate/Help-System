@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import CreateTicket from '../CreateTicket/CreateTicket.jsx'
 import './ticketqueue.css'
 
 //isto vai ser substituido por uma chamada a API para pegar os tickets do banco de dados
@@ -20,6 +22,13 @@ function TicketQueue({ tickets = sampleTickets, total = 38, page = 1, perPage = 
 
   const pageCount = Math.max(1, Math.ceil(total / perPage))
   const pages = Array.from({ length: pageCount }, (_, i) => i + 1)
+  const [creating, setCreating] = useState(false)
+
+  // ponytail: no API yet, submitting only closes the overlay
+  function handleCreate(e) {
+    e.preventDefault()
+    setCreating(false)
+  }
 
   return (
     <section className="queue">
@@ -29,7 +38,7 @@ function TicketQueue({ tickets = sampleTickets, total = 38, page = 1, perPage = 
           <p className="rubik-text queue-count">Showing {tickets.length} of {total} unresolved assignments</p>
         </div>
         <div className="queue-actions">
-          <button className="rubik-subtitle queue-button" type="button">Create Ticket</button>
+          <button className="rubik-subtitle queue-button" type="button" onClick={() => setCreating(true)}>Create Ticket</button>
           <button className="rubik-subtitle queue-button" type="button">All Statuses</button>
           <button className="rubik-subtitle queue-button" type="button">Filter</button>
         </div>
@@ -62,6 +71,8 @@ function TicketQueue({ tickets = sampleTickets, total = 38, page = 1, perPage = 
           <ArrowRight className="icon icon-dark" />
         </button>
       </nav>
+
+      {creating && <CreateTicket onClose={() => setCreating(false)} onSubmit={handleCreate} />}
     </section>
   )
 }

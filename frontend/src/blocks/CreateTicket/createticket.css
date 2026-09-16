@@ -1,0 +1,34 @@
+/* Covers the ticket queue card and centers the form on it */
+.create-ticket-overlay {
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: var(--space-6);
+  background: rgba(15, 23, 42, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.create-ticket {
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+}
+
+.create-ticket-title {
+  margin: 0;
+  text-align: center;
+  color: var(--color-icon-dark);
+}
+
+.create-ticket textarea {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font: inherit;
+  color: var(--color-icon-dark);
+  resize: vertical;
+}
