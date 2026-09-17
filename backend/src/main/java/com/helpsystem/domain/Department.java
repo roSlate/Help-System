@@ -1,9 +1,6 @@
 package com.helpsystem.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 /**
  * Class for Department
@@ -17,8 +14,7 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    // find a way to make this protected so it's unique (i.e., if "HR" already exists, do not allow
-    // for repeated creation)
+    @Column(unique = true)
     String departmentName;
 
     protected Department() {
