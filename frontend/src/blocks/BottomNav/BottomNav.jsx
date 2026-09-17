@@ -1,7 +1,7 @@
 import { LifeBuoy, Search, User } from 'lucide-react'
 import './bottomnav.css'
 
-function BottomNav({ userName = 'Christian W.', userRole = 'User', onSearch }) {
+function BottomNav({ userName, userRole, onSearch }) {
   return (
     <nav className="bottomnav">
       <div className="bottomnav-brand">

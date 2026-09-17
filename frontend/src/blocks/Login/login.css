@@ -91,6 +91,12 @@
   cursor: pointer;
 }
 
+.login-error {
+  margin: 0;
+  text-align: center;
+  color: var(--color-orange-dark);
+}
+
 .login-footer {
   display: flex;
   justify-content: center;

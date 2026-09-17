@@ -1,5 +1,4 @@
-import { Routes, Route } from 'react-router'
-import Home from './pages/Home.jsx'
+import { Routes, Route, Navigate } from 'react-router'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -10,7 +9,7 @@ import NotFound from './pages/NotFound.jsx'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />

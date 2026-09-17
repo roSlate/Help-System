@@ -1,10 +1,9 @@
 import { LifeBuoy, Mail, Lock } from 'lucide-react'
 import './login.css'
 
-// ponytail: noValidate lets empty fields through until auth exists, remove it then
-function Login({ onSubmit }) {
+function Login({ onSubmit, error }) {
   return (
-    <form className="login-card" onSubmit={onSubmit} noValidate>
+    <form className="login-card" onSubmit={onSubmit}>
       <div className="login-brand">
         <span className="login-logo">
           <LifeBuoy className="icon" />
@@ -28,6 +27,8 @@ function Login({ onSubmit }) {
         </div>
         <a className="rubik-subtitle login-forgot" href="/forgot-password">Forgot password?</a>
       </div>
+
+      {error && <p className="rubik-text login-error" role="alert">{error}</p>}
 
       <button className="sora-brand login-submit" type="submit">Log In</button>
 
