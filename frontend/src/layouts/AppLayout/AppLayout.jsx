@@ -1,8 +1,11 @@
 import Sidebar from '../../blocks/Sidebar/Sidebar.jsx'
 import BottomNav from '../../blocks/BottomNav/BottomNav.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
 import './applayout.css'
 
 function AppLayout({ children }) {
+  const { user } = useAuth()
+
   return (
     <div className="app-shell">
       <main className="app-main">
@@ -11,7 +14,8 @@ function AppLayout({ children }) {
         </div>
         <div className="app-body">{children}</div>
       </main>
-      <BottomNav />
+      {/* role comes from the backend once it sends one */}
+      <BottomNav userName={user?.name} userRole={user?.role} />
     </div>
   )
 }

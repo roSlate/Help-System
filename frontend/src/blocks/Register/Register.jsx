@@ -1,7 +1,7 @@
 import { LifeBuoy, Mail, User, Building2, Lock } from 'lucide-react'
 import '../Login/login.css'
 
-function Register({ onSubmit }) {
+function Register({ onSubmit, error }) {
   return (
     <form className="login-card" onSubmit={onSubmit}>
       <div className="login-brand">
@@ -50,6 +50,8 @@ function Register({ onSubmit }) {
           <input id="register-confirm" name="confirmPassword" type="password" placeholder="••••••••" required />
         </div>
       </div>
+
+      {error && <p className="rubik-text login-error" role="alert">{error}</p>}
 
       <button className="sora-brand login-submit" type="submit">Register</button>
 
